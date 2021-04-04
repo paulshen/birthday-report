@@ -12,6 +12,9 @@ module.exports = {
       colors: {
         gray: colors.trueGray,
       },
+      fontSize: {
+        "2xs": ["0.65rem", "0.9rem"],
+      },
     },
   },
   variants: {
