@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.calendar-cell {
+  width: calc(14.2857% + 1px);
+  aspect-ratio: 1;
+  margin-right: -1px;
+  margin-bottom: -1px;
+}

@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import { MonthCalendar } from "./MonthCalendar";
 
 type Entry = {
   name: string;
@@ -132,6 +133,7 @@ function App() {
   );
   return (
     <div className="max-w-lg mx-auto pt-16">
+      <MonthCalendar year={2021} month={4} />
       <AddBirthdayForm addEntry={addEntry} />
       <List entries={entries} />
     </div>
