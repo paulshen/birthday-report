@@ -1,6 +1,9 @@
 import React, { useCallback, useState } from "react";
+import arrowBackSvg from "./arrow_back_black_18dp.svg";
+import arrowForwardSvg from "./arrow_forward_black_18dp.svg";
 import { MonthCalendar } from "./MonthCalendar";
-import { Entry } from "./Types";
+import { Entry, MONTHS } from "./Types";
+import calendarIconSvg from "./calendar_today_black_18dp.svg";
 
 export function BirthdayCalendar({ entries }: { entries: Entry[] }) {
   const [yearMonth, setYearMonth] = useState<[year: number, month: number]>(
@@ -25,30 +28,33 @@ export function BirthdayCalendar({ entries }: { entries: Entry[] }) {
   );
 
   return (
-    <div>
-      <div className="flex items-center">
-        <button
-          onClick={() => {
-            setYearMonth(([year, month]) =>
-              month === 1 ? [year - 1, 12] : [year, month - 1]
-            );
-          }}
-          className="bg-gray-100 flex items-center justify-center w-8 h-8 mr-2"
-        >
-          {"<"}
-        </button>
-        <button
-          onClick={() => {
-            setYearMonth(([year, month]) =>
-              month === 12 ? [year + 1, 1] : [year, month + 1]
-            );
-          }}
-          className="bg-gray-100 flex items-center justify-center w-8 h-8 mr-2"
-        >
-          {">"}
-        </button>
-        <div>
+    <div className="mt-8">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex text-gray-800">
+          <img src={calendarIconSvg} className="mr-1" />
           {MONTHS[month - 1]} {year}
+        </div>
+        <div className="flex">
+          <button
+            onClick={() => {
+              setYearMonth(([year, month]) =>
+                month === 1 ? [year - 1, 12] : [year, month - 1]
+              );
+            }}
+            className="flex mr-2 opacity-25 hover:opacity-100 transition-opacity"
+          >
+            <img src={arrowBackSvg} />
+          </button>
+          <button
+            onClick={() => {
+              setYearMonth(([year, month]) =>
+                month === 12 ? [year + 1, 1] : [year, month + 1]
+              );
+            }}
+            className="flex opacity-25 hover:opacity-100 transition-opacity"
+          >
+            <img src={arrowForwardSvg} />
+          </button>
         </div>
       </div>
       <MonthCalendar year={year} month={month} renderCell={renderCell} />

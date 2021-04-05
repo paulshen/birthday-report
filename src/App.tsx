@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { BirthdayCalendar } from "./BirthdayCalendar";
 import { BirthdayList } from "./BirthdayList";
 import {
   deleteSupabaseEntry,
@@ -160,7 +161,7 @@ function AddBirthdayForm({
               onClick={() => {
                 onClose();
               }}
-              className="text-gray-400"
+              className="text-gray-400 hover:text-gray-800 transition-colors"
             >
               Close
             </button>
@@ -196,7 +197,7 @@ function AddBirthday({
           onClick={() => {
             setShowForm(true);
           }}
-          className="text-gray-400 hover:text-gray-700 mb-0.5 transition-colors"
+          className="text-gray-400 hover:text-gray-800 mb-0.5 transition-colors"
         >
           + Add birthdays
         </button>
@@ -222,7 +223,7 @@ function LoginNotice() {
       <button className="underline" onClick={() => login()}>
         Log in
       </button>{" "}
-      to save your birthday report! You will lose them otherwise when you close
+      to save your birthday report! You will lose it otherwise when you close
       this browser tab.
     </div>
   );
@@ -231,7 +232,7 @@ function LoginNotice() {
 function Footer() {
   const user = useUser().user;
   return (
-    <div className="ml-36 mt-16">
+    <div className="ml-36 mt-16 pb-16">
       {user === undefined ? (
         <button
           onClick={() => login()}
@@ -245,7 +246,7 @@ function Footer() {
           <div>
             <button
               onClick={() => logout()}
-              className="text-gray-400 hover:text-gray-700 hover:underline transition-colors"
+              className="text-gray-400 hover:text-gray-800 hover:underline transition-colors"
             >
               Log out
             </button>
@@ -375,6 +376,7 @@ function App() {
         deleteEntry={deleteEntry}
       />
       {!isLoggedIn && entries.length > 0 ? <LoginNotice /> : null}
+      <BirthdayCalendar entries={entries} />
       <Footer />
     </div>
   );

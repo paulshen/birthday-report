@@ -65,7 +65,7 @@ function ListItemEdit({
             <button
               type="button"
               onClick={() => onClose()}
-              className="text-gray-300"
+              className="text-gray-300 hover:text-gray-800 transition-colors"
             >
               Cancel
             </button>
@@ -111,7 +111,9 @@ function ListItem({
         }
       )}
     >
-      <div className="text-gray-300 w-36">{formatDate(month, date)}</div>
+      <div className="text-gray-300 group-hover:text-gray-600 w-36 transition-colors">
+        {formatDate(month, date)}
+      </div>
       <div className="relative">
         {name}
         <button
