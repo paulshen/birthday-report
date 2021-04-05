@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { BirthdayList } from "./BirthdayList";
+import { useUser } from "./State";
 import { DAYS_IN_MONTH, Entry, EntryWithoutId, MONTHS } from "./Types";
 
 const DATA: Entry[] = [

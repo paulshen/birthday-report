@@ -7,10 +7,12 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^1.7.7",
     "classnames": "^2.3.1",
     "date-fns": "^2.19.0",
     "react": "^17.0.0",
-    "react-dom": "^17.0.0"
+    "react-dom": "^17.0.0",
+    "zustand": "^3.3.3"
   },
   "devDependencies": {
     "@tailwindcss/jit": "^0.1.18",
