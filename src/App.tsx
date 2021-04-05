@@ -1,5 +1,6 @@
+import classNames from "classnames";
 import { differenceInCalendarDays, getDaysInYear, startOfDay } from "date-fns";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Entry } from "./Types";
 
 const DATA: Entry[] = [
@@ -57,13 +58,35 @@ function List({ entries }: { entries: Entry[] }) {
   );
 }
 
-function AddBirthdayForm({ addEntry }: { addEntry: (entry: Entry) => void }) {
+function AddBirthdayForm({
+  addEntry,
+  onClose: onCloseArg,
+}: {
+  addEntry: (entry: Entry) => void;
+  onClose: () => void;
+}) {
   const [name, setName] = useState("");
   const [month, setMonth] = useState("1");
   const [date, setDate] = useState("");
   const [year, setYear] = useState("");
+
+  const [animateIn, setAnimateIn] = useState(false);
+  useEffect(() => {
+    const timeout = setTimeout(() => setAnimateIn(true), 0);
+    return () => clearTimeout(timeout);
+  }, []);
+  const onClose = useCallback(() => {
+    setAnimateIn(false);
+    setTimeout(onCloseArg, 150);
+  }, [onCloseArg]);
+
   return (
-    <div className="flex pb-0.5 pl-32 mb-4">
+    <div
+      className={classNames(
+        "mb-4 transform transition-opacity",
+        animateIn ? "opacity-100" : "opacity-0"
+      )}
+    >
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -76,6 +99,7 @@ function AddBirthdayForm({ addEntry }: { addEntry: (entry: Entry) => void }) {
             entry.year = parseInt(year);
           }
           addEntry(entry);
+          onClose();
         }}
       >
         <div className="mb-2">
@@ -124,12 +148,42 @@ function AddBirthdayForm({ addEntry }: { addEntry: (entry: Entry) => void }) {
         <div>
           <button
             type="submit"
-            className="bg-gray-700 text-white rounded px-4 py-2"
+            className="bg-gray-700 text-white rounded px-4 py-2 mr-4"
           >
             Add birthday
           </button>
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+            }}
+            className="text-gray-400"
+          >
+            Cancel
+          </button>
         </div>
       </form>
+    </div>
+  );
+}
+
+function AddBirthday({ addEntry }: { addEntry: (entry: Entry) => void }) {
+  const [showForm, setShowForm] = useState(false);
+  const onClose = useCallback(() => setShowForm(false), [setShowForm]);
+  return (
+    <div className="pl-32">
+      {showForm ? (
+        <AddBirthdayForm addEntry={addEntry} onClose={onClose} />
+      ) : (
+        <button
+          onClick={() => {
+            setShowForm(true);
+          }}
+          className="text-gray-400"
+        >
+          + Add birthday
+        </button>
+      )}
     </div>
   );
 }
@@ -144,7 +198,7 @@ function App() {
   );
   return (
     <div className="max-w-lg mx-auto pt-16">
-      <AddBirthdayForm addEntry={addEntry} />
+      <AddBirthday addEntry={addEntry} />
       <List entries={entries} />
     </div>
   );
