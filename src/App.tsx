@@ -48,7 +48,7 @@ function AddBirthdayForm({
     isYearValid = yearInt >= 1800 && yearInt <= new Date().getFullYear();
   }
 
-  const [animateIn, setAnimateIn] = useState(false);
+  const [animateIn, setAnimateIn] = useState(forceShow);
   useEffect(() => {
     const timeout = setTimeout(() => setAnimateIn(true), 0);
     nameInputRef.current!.focus();
@@ -173,6 +173,33 @@ function AddBirthdayForm({
   );
 }
 
+function StartHere() {
+  const [animationStage, setAnimationStage] = useState(0);
+  useEffect(() => {
+    setTimeout(() => setAnimationStage(1), 300);
+    const timeout = setTimeout(() => setAnimationStage(2), 600);
+    return () => clearTimeout(timeout);
+  }, []);
+  return (
+    <div
+      className={classNames(
+        "mt-[23px] transition-opacity",
+        animationStage > 0 ? "opacity-100" : "opacity-0"
+      )}
+    >
+      Start here
+      <span
+        className={classNames(
+          "inline-block transform transition-all",
+          animationStage > 1 ? "translate-x-1 opacity-100" : "opacity-0"
+        )}
+      >
+        →
+      </span>
+    </div>
+  );
+}
+
 function AddBirthday({
   forceShow,
   insertEntry,
@@ -186,23 +213,26 @@ function AddBirthday({
   }
   const onClose = useCallback(() => setShowForm(false), [setShowForm]);
   return (
-    <div className="pl-36">
-      {forceShow || showForm ? (
-        <AddBirthdayForm
-          insertEntry={insertEntry}
-          forceShow={forceShow}
-          onClose={onClose}
-        />
-      ) : (
-        <button
-          onClick={() => {
-            setShowForm(true);
-          }}
-          className="text-gray-400 hover:text-gray-800 mb-0.5 transition-colors"
-        >
-          + Add birthdays
-        </button>
-      )}
+    <div className="flex">
+      <div className="w-36">{forceShow ? <StartHere /> : null}</div>
+      <div>
+        {forceShow || showForm ? (
+          <AddBirthdayForm
+            insertEntry={insertEntry}
+            forceShow={forceShow}
+            onClose={onClose}
+          />
+        ) : (
+          <button
+            onClick={() => {
+              setShowForm(true);
+            }}
+            className="text-gray-400 hover:text-gray-800 mb-0.5 transition-colors"
+          >
+            + Add birthdays
+          </button>
+        )}
+      </div>
     </div>
   );
 }
