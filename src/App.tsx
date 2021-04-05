@@ -36,6 +36,7 @@ function AddBirthdayForm({
   const [animateIn, setAnimateIn] = useState(false);
   useEffect(() => {
     const timeout = setTimeout(() => setAnimateIn(true), 0);
+    nameInputRef.current!.focus();
     return () => clearTimeout(timeout);
   }, []);
   const onClose = useCallback(() => {
@@ -198,10 +199,18 @@ function App() {
     },
     [setEntries]
   );
+  const updateEntry = useCallback(
+    (entry: Entry) => {
+      setEntries((entries) =>
+        entries.map((e) => (e.id === entry.id ? entry : e))
+      );
+    },
+    [setEntries]
+  );
   return (
-    <div className="max-w-lg mx-auto pt-16">
+    <div className="max-w-md mx-auto pt-16">
       <AddBirthday addEntry={addEntry} />
-      <BirthdayList entries={entries} />
+      <BirthdayList entries={entries} updateEntry={updateEntry} />
     </div>
   );
 }
