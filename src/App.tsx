@@ -1,6 +1,12 @@
 import classNames from "classnames";
 import { differenceInCalendarDays, getDaysInYear, startOfDay } from "date-fns";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Entry } from "./Types";
 
 const DATA: Entry[] = [
@@ -23,6 +29,7 @@ const MONTHS = [
   "November",
   "December",
 ];
+const DAYS_IN_MONTH = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 function formatDate(month: number, date: number) {
   return `${MONTHS[month - 1]} ${date}`;
@@ -65,10 +72,21 @@ function AddBirthdayForm({
   addEntry: (entry: Entry) => void;
   onClose: () => void;
 }) {
+  const nameInputRef = useRef<HTMLInputElement | null>(null);
   const [name, setName] = useState("");
   const [month, setMonth] = useState("1");
   const [date, setDate] = useState("");
   const [year, setYear] = useState("");
+  const [showErrors, setShowErrors] = useState(false);
+
+  const isNameTooShort = name.trim().length === 0;
+  const dateInt = parseInt(date);
+  const isDateValid = dateInt >= 1 && dateInt < DAYS_IN_MONTH[parseInt(month)];
+  let isYearValid = year.trim() === "";
+  if (!isYearValid) {
+    const yearInt = parseInt(year);
+    isYearValid = yearInt >= 1800 && yearInt <= new Date().getFullYear();
+  }
 
   const [animateIn, setAnimateIn] = useState(false);
   useEffect(() => {
@@ -90,6 +108,11 @@ function AddBirthdayForm({
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          if (isNameTooShort || !isDateValid || !isYearValid) {
+            setShowErrors(true);
+            return;
+          }
+          setShowErrors(false);
           const entry: Entry = {
             name,
             month: parseInt(month),
@@ -99,7 +122,11 @@ function AddBirthdayForm({
             entry.year = parseInt(year);
           }
           addEntry(entry);
-          onClose();
+          setName("");
+          setMonth("1");
+          setDate("");
+          setYear("");
+          nameInputRef.current!.focus();
         }}
       >
         <div className="mb-2">
@@ -108,7 +135,13 @@ function AddBirthdayForm({
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full bg-gray-100 rounded p-2"
+            className={classNames(
+              "w-full bg-gray-100 rounded px-2 py-1.5 border transition-colors",
+              showErrors && isNameTooShort
+                ? "border-red-300"
+                : "border-transparent"
+            )}
+            ref={nameInputRef}
           />
         </div>
         <div className="flex mb-2">
@@ -117,7 +150,7 @@ function AddBirthdayForm({
             <select
               value={month}
               onChange={(e) => setMonth(e.target.value)}
-              className="bg-gray-100 rounded p-2"
+              className="bg-gray-100 rounded px-2 h-[34px] border border-transparent"
             >
               {MONTHS.map((month, i) => (
                 <option value={i + 1} key={i}>
@@ -132,7 +165,12 @@ function AddBirthdayForm({
               type="text"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="bg-gray-100 rounded p-2 w-12"
+              className={classNames(
+                "w-12 bg-gray-100 rounded px-2 py-1.5 border transition-colors",
+                showErrors && !isDateValid
+                  ? "border-red-300"
+                  : "border-transparent"
+              )}
             />
           </div>
           <div>
@@ -141,7 +179,12 @@ function AddBirthdayForm({
               type="text"
               value={year}
               onChange={(e) => setYear(e.target.value)}
-              className="bg-gray-100 rounded p-2 w-20"
+              className={classNames(
+                "w-20 bg-gray-100 rounded px-2 py-1.5 border transition-colors",
+                showErrors && !isYearValid
+                  ? "border-red-300"
+                  : "border-transparent"
+              )}
             />
           </div>
         </div>
