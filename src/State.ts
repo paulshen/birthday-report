@@ -49,7 +49,7 @@ export async function fetchEntries(): Promise<Entry[]> {
   return response.data.map(entryFromResponse);
 }
 
-export async function insertEntry(entry: Entry): Promise<Entry> {
+export async function insertSupabaseEntry(entry: Entry): Promise<Entry> {
   const client = getSupabaseClient();
   const session = client.auth.session();
   if (session === null) {
@@ -71,7 +71,7 @@ export async function insertEntry(entry: Entry): Promise<Entry> {
   return entryFromResponse(response.data[0]);
 }
 
-export async function updateEntry(entry: Entry): Promise<Entry> {
+export async function updateSupabaseEntry(entry: Entry): Promise<Entry> {
   const client = getSupabaseClient();
   const session = client.auth.session();
   if (session === null) {
@@ -93,7 +93,7 @@ export async function updateEntry(entry: Entry): Promise<Entry> {
   return entryFromResponse(response.data[0]);
 }
 
-export async function deleteEntry(entryId: number): Promise<void> {
+export async function deleteSupabaseEntry(entryId: number): Promise<void> {
   const client = getSupabaseClient();
   const session = client.auth.session();
   if (session === null) {

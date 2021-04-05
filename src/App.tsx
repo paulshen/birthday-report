@@ -1,7 +1,14 @@
 import classNames from "classnames";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { BirthdayList } from "./BirthdayList";
-import { useUser } from "./State";
+import {
+  deleteSupabaseEntry,
+  fetchEntries,
+  insertSupabaseEntry,
+  updateSupabaseEntry,
+  useEntries,
+  useUser,
+} from "./State";
 import { DAYS_IN_MONTH, Entry, EntryWithoutId, MONTHS } from "./Types";
 
 const DATA: Entry[] = [
@@ -11,10 +18,10 @@ const DATA: Entry[] = [
 ];
 
 function AddBirthdayForm({
-  addEntry,
+  insertEntry,
   onClose: onCloseArg,
 }: {
-  addEntry: (entry: EntryWithoutId) => void;
+  insertEntry: (entry: EntryWithoutId) => void;
   onClose: () => void;
 }) {
   const nameInputRef = useRef<HTMLInputElement | null>(null);
@@ -68,7 +75,7 @@ function AddBirthdayForm({
           if (year !== "") {
             entry.year = parseInt(year);
           }
-          addEntry(entry);
+          insertEntry(entry);
           setName("");
           setMonth("1");
           setDate("");
@@ -158,16 +165,16 @@ function AddBirthdayForm({
 }
 
 function AddBirthday({
-  addEntry,
+  insertEntry,
 }: {
-  addEntry: (entry: EntryWithoutId) => void;
+  insertEntry: (entry: EntryWithoutId) => void;
 }) {
   const [showForm, setShowForm] = useState(false);
   const onClose = useCallback(() => setShowForm(false), [setShowForm]);
   return (
     <div className="pl-36">
       {showForm ? (
-        <AddBirthdayForm addEntry={addEntry} onClose={onClose} />
+        <AddBirthdayForm insertEntry={insertEntry} onClose={onClose} />
       ) : (
         <button
           onClick={() => {
@@ -183,40 +190,69 @@ function AddBirthday({
 }
 
 function App() {
-  const [entries, setEntries] = useState<Entry[]>(() => [...DATA]);
-  const addEntry = useCallback(
-    (entry: EntryWithoutId) => {
-      setEntries((entries) => [
-        ...entries,
-        {
-          ...entry,
-          id:
-            Math.max.apply(
-              null,
-              entries.map((e) => e.id)
-            ) + 1,
-        },
-      ]);
+  const user = useUser().user;
+  const entries = useEntries().entries;
+  const isLoggedIn = user !== undefined;
+
+  useEffect(() => {
+    async function go() {
+      if (useUser.getState().user !== undefined) {
+        const entries = await fetchEntries();
+        useEntries.setState({ entries });
+      } else {
+        useEntries.setState({ entries: [] });
+      }
+    }
+    go();
+  }, []);
+  const insertEntry = useCallback(
+    async (entryWithoutId: EntryWithoutId) => {
+      const entries = useEntries.getState().entries!;
+      const id = Math.max(...entries.map((e) => e.id)) + 1;
+      const entry = { ...entryWithoutId, id };
+      let entryToInsert = entry;
+      if (isLoggedIn) {
+        entryToInsert = await insertSupabaseEntry(entry);
+      }
+      useEntries.setState({
+        entries: [...useEntries.getState().entries!, entry],
+      });
     },
-    [setEntries]
+    [isLoggedIn]
   );
   const updateEntry = useCallback(
-    (entry: Entry) => {
-      setEntries((entries) =>
-        entries.map((e) => (e.id === entry.id ? entry : e))
-      );
+    async (entry: Entry) => {
+      let entryToUpdate = entry;
+      if (isLoggedIn) {
+        entryToUpdate = await updateSupabaseEntry(entry);
+      }
+      useEntries.setState({
+        entries: useEntries
+          .getState()
+          .entries!.map((e) => (e.id === entryToUpdate.id ? entryToUpdate : e)),
+      });
     },
-    [setEntries]
+    [isLoggedIn]
   );
   const deleteEntry = useCallback(
-    (entryId: number) => {
-      setEntries((entries) => entries.filter((e) => e.id !== entryId));
+    async (entryId: number) => {
+      if (isLoggedIn) {
+        await deleteSupabaseEntry(entryId);
+      }
+      useEntries.setState({
+        entries: useEntries.getState().entries!.filter((e) => e.id !== entryId),
+      });
     },
-    [setEntries]
+    [isLoggedIn]
   );
+
+  if (entries === undefined) {
+    return null;
+  }
+
   return (
     <div className="max-w-md mx-auto pt-16">
-      <AddBirthday addEntry={addEntry} />
+      <AddBirthday insertEntry={insertEntry} />
       <BirthdayList
         entries={entries}
         updateEntry={updateEntry}
