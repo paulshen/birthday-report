@@ -1,15 +1,19 @@
 import classNames from "classnames";
-import { getDaysInMonth } from "date-fns";
+import { getDaysInMonth, isToday } from "date-fns";
 import React, { useMemo } from "react";
 
 function Week({
   startDate,
   startDay,
+  year,
+  month,
   daysInMonth,
   renderCell,
 }: {
   startDate: number;
   startDay: number;
+  year: number;
+  month: number;
   daysInMonth: number;
   renderCell: (date: number) => React.ReactNode;
 }) {
@@ -21,13 +25,17 @@ function Week({
   for (; i < 7 && startDate + i <= daysInMonth; i++) {
     cells.push(
       <div
-        className={classNames("calendar-cell border-l border-t p-1", {
-          "border-r": i === 6 || startDate + i === daysInMonth,
-          "border-b": startDate + i + 7 > daysInMonth,
-        })}
+        className={classNames(
+          "calendar-cell border border-t relative group hover:z-10 border-gray-200 hover:border-gray-500 p-1",
+          {
+            "bg-gray-100": isToday(
+              new Date(year, month - 1, startDate + i - startDay)
+            ),
+          }
+        )}
         key={i}
       >
-        <div className="text-gray-300 font-light text-xs">
+        <div className="text-gray-300 font text-xs group-hover:text-gray-800">
           {startDate + i - startDay}
         </div>
         {renderCell(startDate + i - startDay)}
@@ -58,6 +66,8 @@ export function MonthCalendar({
       startDate={1}
       startDay={startsOnDay}
       daysInMonth={daysInMonth}
+      year={year}
+      month={month}
       renderCell={renderCell}
       key={0}
     />,
@@ -67,6 +77,8 @@ export function MonthCalendar({
       <Week
         startDate={i}
         startDay={0}
+        year={year}
+        month={month}
         daysInMonth={daysInMonth}
         renderCell={renderCell}
         key={i}

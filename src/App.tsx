@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { LayerContainer, TooltipConfigContext } from "react-atmosphere";
 import { BirthdayCalendar } from "./BirthdayCalendar";
 import { BirthdayList } from "./BirthdayList";
 import {
@@ -382,4 +383,30 @@ function App() {
   );
 }
 
-export default App;
+const TooltipConfig = {
+  renderTooltip: (text: React.ReactNode) => (
+    <div className="bg-gray-700 text-white px-2 py-1 rounded">{text}</div>
+  ),
+  options: {
+    placement: "top" as const,
+    modifiers: [
+      {
+        name: "offset",
+        options: {
+          offset: [0, 4],
+        },
+      },
+    ],
+  },
+};
+
+export default function AppWrapper() {
+  return (
+    <TooltipConfigContext.Provider value={TooltipConfig}>
+      <App />
+      <div className="relative z-50">
+        <LayerContainer />
+      </div>
+    </TooltipConfigContext.Provider>
+  );
+}

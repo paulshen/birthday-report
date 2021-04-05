@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from "react";
+import { Tooltip } from "react-atmosphere";
 import arrowBackSvg from "./arrow_back_black_18dp.svg";
 import arrowForwardSvg from "./arrow_forward_black_18dp.svg";
+import calendarIconSvg from "./calendar_today_black_18dp.svg";
 import { MonthCalendar } from "./MonthCalendar";
 import { Entry, MONTHS } from "./Types";
-import calendarIconSvg from "./calendar_today_black_18dp.svg";
 
 export function BirthdayCalendar({ entries }: { entries: Entry[] }) {
   const [yearMonth, setYearMonth] = useState<[year: number, month: number]>(
@@ -17,9 +18,18 @@ export function BirthdayCalendar({ entries }: { entries: Entry[] }) {
         return null;
       }
       return (
-        <div>
+        <div className="flex flex-wrap">
           {e.map(({ name }, i) => (
-            <div key={i}>{name}</div>
+            <Tooltip text={`${name}`} key={i}>
+              {(tooltipProps) => (
+                <div
+                  {...tooltipProps}
+                  className="w-4 h-4 rounded-full flex items-center justify-center text-2xs bg-gray-500 hover:bg-gray-800 transition-colors text-white uppercase mr-0.5 mb-0.5 cursor-default"
+                >
+                  {name[0]}
+                </div>
+              )}
+            </Tooltip>
           ))}
         </div>
       );
