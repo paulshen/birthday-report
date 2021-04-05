@@ -150,12 +150,14 @@ export async function updateSupabaseEntry(entry: Entry): Promise<Entry> {
   const response = await client
     .from<definitions["birthdays"]>("birthdays")
     .update({
-      user_id: session.user.id,
-      id: entry.id,
       name: entry.name,
       month: entry.month,
       date: entry.date,
       year: entry.year,
+    })
+    .match({
+      user_id: session.user.id,
+      id: `${entry.id}`,
     });
   if (response.error !== null) {
     throw new Error(response.error.message);
@@ -174,8 +176,7 @@ export async function deleteSupabaseEntry(entryId: number): Promise<void> {
     .delete()
     .match({
       user_id: session.user.id,
-      // @ts-ignore
-      id: entryId,
+      id: `${entryId}`,
     });
   if (response.error !== null) {
     throw new Error(response.error.message);

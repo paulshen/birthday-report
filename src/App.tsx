@@ -196,7 +196,7 @@ function AddBirthday({
           onClick={() => {
             setShowForm(true);
           }}
-          className="text-gray-400 mb-0.5"
+          className="text-gray-400 hover:text-gray-700 mb-0.5 transition-colors"
         >
           + Add birthdays
         </button>
@@ -229,12 +229,10 @@ function LoginNotice() {
 }
 
 function Footer() {
-  const isLoggedIn = useUser(
-    useCallback((state) => state.user !== undefined, [])
-  );
+  const user = useUser().user;
   return (
     <div className="ml-36 mt-16">
-      {!isLoggedIn ? (
+      {user === undefined ? (
         <button
           onClick={() => login()}
           className="text-gray-400 hover:text-gray-700 transition-colors"
@@ -242,12 +240,17 @@ function Footer() {
           Log in
         </button>
       ) : (
-        <button
-          onClick={() => logout()}
-          className="text-gray-400 hover:text-gray-700 transition-colors"
-        >
-          Log out
-        </button>
+        <div className="text-xs">
+          <div className="text-gray-400">You are {user.email}</div>
+          <div>
+            <button
+              onClick={() => logout()}
+              className="text-gray-400 hover:text-gray-700 hover:underline transition-colors"
+            >
+              Log out
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -353,6 +356,18 @@ function App() {
 
   return (
     <div className="max-w-md mx-auto pt-16">
+      <div className="ml-36 mb-8">
+        <div className="flex text-xl">
+          <span className="">
+            Bi
+            <span style={{ letterSpacing: "2px" }}>r</span>
+            thday.repo
+            <span style={{ letterSpacing: "2px" }}>r</span>t
+          </span>
+          <span className="ml-2">🎂📋</span>
+        </div>
+        <div className="text-xs text-gray-300">Stop forgetting birthdays</div>
+      </div>
       <AddBirthday forceShow={entries.length === 0} insertEntry={insertEntry} />
       <BirthdayList
         entries={entries}

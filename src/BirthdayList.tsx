@@ -32,7 +32,7 @@ function ListItemEdit({
   return (
     <div
       className={classNames(
-        "bg-white border border-gray-100 absolute left-[131px] top-[-13px] -right-1 p-2 rounded shadow-lg transition-opacity",
+        "bg-white border border-gray-100 absolute left-[123px] top-[-21px] -right-1 p-4 rounded shadow-lg transition-opacity",
         animateIn ? "opacity-100" : "opacity-0"
       )}
     >
@@ -75,7 +75,7 @@ function ListItemEdit({
             onClick={() => deleteEntry(entry.id)}
             className="text-red-400"
           >
-            Delete
+            Remove
           </button>
         </div>
       </form>
