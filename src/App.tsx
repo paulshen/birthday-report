@@ -1,69 +1,13 @@
 import classNames from "classnames";
-import { differenceInCalendarDays, getDaysInYear, startOfDay } from "date-fns";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { Entry, EntryWithoutId } from "./Types";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { BirthdayList } from "./BirthdayList";
+import { DAYS_IN_MONTH, Entry, EntryWithoutId, MONTHS } from "./Types";
 
 const DATA: Entry[] = [
   { id: 1, name: "Alice", month: 9, date: 25, year: 1991 },
   { id: 2, name: "Bob", month: 3, date: 21, year: 1988 },
   { id: 3, name: "Carol", month: 7, date: 28, year: 1993 },
 ];
-
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-const DAYS_IN_MONTH = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-function formatDate(month: number, date: number) {
-  return `${MONTHS[month - 1]} ${date}`;
-}
-
-function List({ entries }: { entries: Entry[] }) {
-  const entriesWithDaysAway = useMemo<
-    [entry: Entry, daysAway: number][]
-  >(() => {
-    const today = startOfDay(new Date());
-    const daysInYear = getDaysInYear(today);
-    return entries.map((entry) => {
-      const diff = differenceInCalendarDays(
-        new Date(today.getFullYear(), entry.month - 1, entry.date),
-        today
-      );
-      return [entry, diff < 0 ? diff + daysInYear : diff];
-    });
-  }, [entries]);
-  const sortedEntries = useMemo(
-    () => entriesWithDaysAway.sort((a, b) => a[1] - b[1]),
-    [entriesWithDaysAway]
-  );
-  return (
-    <div>
-      {sortedEntries.map(([{ name, month, date, year }], i) => (
-        <div className="flex pb-0.5" key={i}>
-          <div className="text-gray-300 w-32">{formatDate(month, date)}</div>
-          <div>{name}</div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function AddBirthdayForm({
   addEntry,
@@ -257,7 +201,7 @@ function App() {
   return (
     <div className="max-w-lg mx-auto pt-16">
       <AddBirthday addEntry={addEntry} />
-      <List entries={entries} />
+      <BirthdayList entries={entries} />
     </div>
   );
 }
