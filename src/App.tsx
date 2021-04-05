@@ -1,12 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { MonthCalendar } from "./MonthCalendar";
-
-type Entry = {
-  name: string;
-  month: number;
-  date: number;
-  year?: number;
-};
+import { Entry } from "./Types";
 
 const DATA: Entry[] = [
   { name: "Alice", month: 9, date: 25, year: 1991 },
@@ -133,7 +126,6 @@ function App() {
   );
   return (
     <div className="max-w-lg mx-auto pt-16">
-      <MonthCalendar year={2021} month={4} />
       <AddBirthdayForm addEntry={addEntry} />
       <List entries={entries} />
     </div>
