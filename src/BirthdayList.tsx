@@ -71,6 +71,7 @@ function ListItemEdit({
             </button>
           </div>
           <button
+            type="button"
             onClick={() => deleteEntry(entry.id)}
             className="text-red-400"
           >

@@ -3,8 +3,11 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { BirthdayList } from "./BirthdayList";
 import {
   deleteSupabaseEntry,
-  fetchEntries,
+  initializeSupabase,
+  insertSupabaseEntries,
   insertSupabaseEntry,
+  login,
+  logout,
   updateSupabaseEntry,
   useEntries,
   useUser,
@@ -196,10 +199,45 @@ function App() {
 
   useEffect(() => {
     async function go() {
-      if (useUser.getState().user !== undefined) {
-        const entries = await fetchEntries();
-        useEntries.setState({ entries });
-      } else {
+      const isSupabaseLoggingIn = location.hash.indexOf("access_token") !== -1;
+      initializeSupabase();
+      if (isSupabaseLoggingIn) {
+        // supabase's handling of access_token is async
+        // https://github.com/supabase/gotrue-js/blob/5690b208ee6f0fa5cf0cf55f5251a10a2bfe5e03/src/GoTrueClient.ts#L281
+        const searchParams = new URLSearchParams(location.search);
+        const loginEntriesQuery = searchParams.get("login_entries");
+        if (loginEntriesQuery !== null) {
+          // TODO: validate
+          const loginEntries: Entry[] = JSON.parse(atob(loginEntriesQuery));
+          history.replaceState({}, "", location.pathname);
+          if (loginEntries.length > 0) {
+            // we had some temporary entries. insert them on login.
+            const unsubscribe = useEntries.subscribe(async (state) => {
+              if (state.entries !== undefined) {
+                unsubscribe();
+                const entryIds = state.entries.map((e) => e.id);
+                const entriesToInsert: Entry[] = [];
+                // reassign IDs since we have fresh server entries
+                loginEntries.forEach((loginEntry) => {
+                  const id =
+                    (entryIds.length > 0 ? Math.max(...entryIds) : 0) + 1;
+                  entryIds.push(id);
+                  entriesToInsert.push({ ...loginEntry, id });
+                });
+                const insertedEntries = await insertSupabaseEntries(
+                  entriesToInsert
+                );
+                useEntries.setState({
+                  entries: [
+                    ...useEntries.getState().entries!,
+                    ...insertedEntries,
+                  ],
+                });
+              }
+            });
+          }
+        }
+      } else if (useUser.getState().user === undefined) {
         useEntries.setState({ entries: [] });
       }
     }
@@ -208,7 +246,8 @@ function App() {
   const insertEntry = useCallback(
     async (entryWithoutId: EntryWithoutId) => {
       const entries = useEntries.getState().entries!;
-      const id = Math.max(...entries.map((e) => e.id)) + 1;
+      const id =
+        (entries.length > 0 ? Math.max(...entries.map((e) => e.id)) : 0) + 1;
       const entry = { ...entryWithoutId, id };
       let entryToInsert = entry;
       if (isLoggedIn) {
@@ -247,6 +286,7 @@ function App() {
   );
 
   if (entries === undefined) {
+    // TODO: show loading
     return null;
   }
 
@@ -258,6 +298,11 @@ function App() {
         updateEntry={updateEntry}
         deleteEntry={deleteEntry}
       />
+      {!isLoggedIn ? (
+        <button onClick={() => login()}>log in</button>
+      ) : (
+        <button onClick={() => logout()}>log out</button>
+      )}
     </div>
   );
 }
