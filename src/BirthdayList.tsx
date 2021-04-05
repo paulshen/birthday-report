@@ -10,10 +10,12 @@ function formatDate(month: number, date: number) {
 function ListItemEdit({
   entry,
   updateEntry,
+  deleteEntry,
   onClose,
 }: {
   entry: Entry;
   updateEntry: (entry: Entry) => void;
+  deleteEntry: (entryId: number) => void;
   onClose: () => void;
 }) {
   const [animateIn, setAnimateIn] = useState(false);
@@ -67,7 +69,12 @@ function ListItemEdit({
               Cancel
             </button>
           </div>
-          <button className="text-red-400">Delete</button>
+          <button
+            onClick={() => deleteEntry(entry.id)}
+            className="text-red-400"
+          >
+            Delete
+          </button>
         </div>
       </form>
     </div>
@@ -77,9 +84,11 @@ function ListItemEdit({
 function ListItem({
   entry,
   updateEntry,
+  deleteEntry,
 }: {
   entry: Entry;
   updateEntry: (entry: Entry) => void;
+  deleteEntry: (entryId: number) => void;
 }) {
   const { name, month, date, year } = entry;
   const [showEdit, setShowEdit] = useState(false);
@@ -108,6 +117,7 @@ function ListItem({
         <ListItemEdit
           entry={entry}
           updateEntry={updateEntry}
+          deleteEntry={deleteEntry}
           onClose={() => setShowEdit(false)}
         />
       ) : null}
@@ -118,9 +128,11 @@ function ListItem({
 export function BirthdayList({
   entries,
   updateEntry,
+  deleteEntry,
 }: {
   entries: Entry[];
   updateEntry: (entry: Entry) => void;
+  deleteEntry: (entryId: number) => void;
 }) {
   const entriesWithDaysAway = useMemo<
     [entry: Entry, daysAway: number][]
@@ -142,7 +154,12 @@ export function BirthdayList({
   return (
     <div>
       {sortedEntries.map(([entry], i) => (
-        <ListItem entry={entry} updateEntry={updateEntry} key={entry.id} />
+        <ListItem
+          entry={entry}
+          updateEntry={updateEntry}
+          deleteEntry={deleteEntry}
+          key={entry.id}
+        />
       ))}
     </div>
   );

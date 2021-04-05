@@ -207,10 +207,20 @@ function App() {
     },
     [setEntries]
   );
+  const deleteEntry = useCallback(
+    (entryId: number) => {
+      setEntries((entries) => entries.filter((e) => e.id !== entryId));
+    },
+    [setEntries]
+  );
   return (
     <div className="max-w-md mx-auto pt-16">
       <AddBirthday addEntry={addEntry} />
-      <BirthdayList entries={entries} updateEntry={updateEntry} />
+      <BirthdayList
+        entries={entries}
+        updateEntry={updateEntry}
+        deleteEntry={deleteEntry}
+      />
     </div>
   );
 }
