@@ -7,12 +7,12 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Entry } from "./Types";
+import { Entry, EntryWithoutId } from "./Types";
 
 const DATA: Entry[] = [
-  { name: "Alice", month: 9, date: 25, year: 1991 },
-  { name: "Bob", month: 3, date: 21, year: 1988 },
-  { name: "Carol", month: 7, date: 28, year: 1993 },
+  { id: 1, name: "Alice", month: 9, date: 25, year: 1991 },
+  { id: 2, name: "Bob", month: 3, date: 21, year: 1988 },
+  { id: 3, name: "Carol", month: 7, date: 28, year: 1993 },
 ];
 
 const MONTHS = [
@@ -69,7 +69,7 @@ function AddBirthdayForm({
   addEntry,
   onClose: onCloseArg,
 }: {
-  addEntry: (entry: Entry) => void;
+  addEntry: (entry: EntryWithoutId) => void;
   onClose: () => void;
 }) {
   const nameInputRef = useRef<HTMLInputElement | null>(null);
@@ -81,7 +81,8 @@ function AddBirthdayForm({
 
   const isNameTooShort = name.trim().length === 0;
   const dateInt = parseInt(date);
-  const isDateValid = dateInt >= 1 && dateInt < DAYS_IN_MONTH[parseInt(month)];
+  const isDateValid =
+    dateInt >= 1 && dateInt <= DAYS_IN_MONTH[parseInt(month) - 1];
   let isYearValid = year.trim() === "";
   if (!isYearValid) {
     const yearInt = parseInt(year);
@@ -113,7 +114,7 @@ function AddBirthdayForm({
             return;
           }
           setShowErrors(false);
-          const entry: Entry = {
+          const entry: EntryWithoutId = {
             name,
             month: parseInt(month),
             date: parseInt(date),
@@ -210,7 +211,11 @@ function AddBirthdayForm({
   );
 }
 
-function AddBirthday({ addEntry }: { addEntry: (entry: Entry) => void }) {
+function AddBirthday({
+  addEntry,
+}: {
+  addEntry: (entry: EntryWithoutId) => void;
+}) {
   const [showForm, setShowForm] = useState(false);
   const onClose = useCallback(() => setShowForm(false), [setShowForm]);
   return (
@@ -234,8 +239,18 @@ function AddBirthday({ addEntry }: { addEntry: (entry: Entry) => void }) {
 function App() {
   const [entries, setEntries] = useState<Entry[]>(() => [...DATA]);
   const addEntry = useCallback(
-    (entry: Entry) => {
-      setEntries((entries) => [...entries, entry]);
+    (entry: EntryWithoutId) => {
+      setEntries((entries) => [
+        ...entries,
+        {
+          ...entry,
+          id:
+            Math.max.apply(
+              null,
+              entries.map((e) => e.id)
+            ) + 1,
+        },
+      ]);
     },
     [setEntries]
   );
