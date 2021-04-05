@@ -22,9 +22,11 @@ const DATA: Entry[] = [
 
 function AddBirthdayForm({
   insertEntry,
+  forceShow,
   onClose: onCloseArg,
 }: {
   insertEntry: (entry: EntryWithoutId) => void;
+  forceShow: boolean;
   onClose: () => void;
 }) {
   const nameInputRef = useRef<HTMLInputElement | null>(null);
@@ -58,7 +60,7 @@ function AddBirthdayForm({
   return (
     <div
       className={classNames(
-        "mb-4 transform transition-opacity",
+        "mb-8 transform transition-opacity",
         animateIn ? "opacity-100" : "opacity-0"
       )}
     >
@@ -152,15 +154,17 @@ function AddBirthdayForm({
           >
             Add birthday
           </button>
-          <button
-            type="button"
-            onClick={() => {
-              onClose();
-            }}
-            className="text-gray-400"
-          >
-            Cancel
-          </button>
+          {!forceShow ? (
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+              }}
+              className="text-gray-400"
+            >
+              Close
+            </button>
+          ) : null}
         </div>
       </form>
     </div>
@@ -168,24 +172,81 @@ function AddBirthdayForm({
 }
 
 function AddBirthday({
+  forceShow,
   insertEntry,
 }: {
+  forceShow: boolean;
   insertEntry: (entry: EntryWithoutId) => void;
 }) {
   const [showForm, setShowForm] = useState(false);
+  if (!showForm && forceShow) {
+    setShowForm(true);
+  }
   const onClose = useCallback(() => setShowForm(false), [setShowForm]);
   return (
     <div className="pl-36">
-      {showForm ? (
-        <AddBirthdayForm insertEntry={insertEntry} onClose={onClose} />
+      {forceShow || showForm ? (
+        <AddBirthdayForm
+          insertEntry={insertEntry}
+          forceShow={forceShow}
+          onClose={onClose}
+        />
       ) : (
         <button
           onClick={() => {
             setShowForm(true);
           }}
-          className="text-gray-400"
+          className="text-gray-400 mb-0.5"
         >
-          + Add birthday
+          + Add birthdays
+        </button>
+      )}
+    </div>
+  );
+}
+
+function LoginNotice() {
+  const [animateIn, setAnimateIn] = useState(false);
+  useEffect(() => {
+    const timeout = setTimeout(() => setAnimateIn(true), 0);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  return (
+    <div
+      className={classNames(
+        "ml-36 mt-4 bg-red-100 text-xs p-2 rounded transition-opacity",
+        animateIn ? "opacity-100" : "opacity-0"
+      )}
+    >
+      <button className="underline" onClick={() => login()}>
+        Log in
+      </button>{" "}
+      to save your birthday report! You will lose them otherwise when you close
+      this browser tab.
+    </div>
+  );
+}
+
+function Footer() {
+  const isLoggedIn = useUser(
+    useCallback((state) => state.user !== undefined, [])
+  );
+  return (
+    <div className="ml-36 mt-16">
+      {!isLoggedIn ? (
+        <button
+          onClick={() => login()}
+          className="text-gray-400 hover:text-gray-700 transition-colors"
+        >
+          Log in
+        </button>
+      ) : (
+        <button
+          onClick={() => logout()}
+          className="text-gray-400 hover:text-gray-700 transition-colors"
+        >
+          Log out
         </button>
       )}
     </div>
@@ -254,7 +315,7 @@ function App() {
         entryToInsert = await insertSupabaseEntry(entry);
       }
       useEntries.setState({
-        entries: [...useEntries.getState().entries!, entry],
+        entries: [...useEntries.getState().entries!, entryToInsert],
       });
     },
     [isLoggedIn]
@@ -292,17 +353,14 @@ function App() {
 
   return (
     <div className="max-w-md mx-auto pt-16">
-      <AddBirthday insertEntry={insertEntry} />
+      <AddBirthday forceShow={entries.length === 0} insertEntry={insertEntry} />
       <BirthdayList
         entries={entries}
         updateEntry={updateEntry}
         deleteEntry={deleteEntry}
       />
-      {!isLoggedIn ? (
-        <button onClick={() => login()}>log in</button>
-      ) : (
-        <button onClick={() => logout()}>log out</button>
-      )}
+      {!isLoggedIn && entries.length > 0 ? <LoginNotice /> : null}
+      <Footer />
     </div>
   );
 }

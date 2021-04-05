@@ -94,11 +94,22 @@ function ListItem({
 }) {
   const { name, month, date, year } = entry;
   const [showEdit, setShowEdit] = useState(false);
+
+  const [animateIn, setAnimateIn] = useState(false);
+  useEffect(() => {
+    const timeout = setTimeout(() => setAnimateIn(true), 0);
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
     <div
-      className={classNames("flex pb-0.5 relative group", {
-        "z-10": showEdit,
-      })}
+      className={classNames(
+        "flex pb-0.5 relative group transition-opacity",
+        animateIn ? "opacity-100" : "opacity-0",
+        {
+          "z-10": showEdit,
+        }
+      )}
     >
       <div className="text-gray-300 w-36">{formatDate(month, date)}</div>
       <div className="relative">
