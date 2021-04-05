@@ -107,7 +107,7 @@ function ListItem({
             setShowEdit(true);
           }}
           className={classNames(
-            "absolute right-full -top-px py-0.5 mr-1 text-gray-300 opacity-0 group-hover:opacity-25 hover:!opacity-100 transition-opacity",
+            "absolute right-full w-[18px] -top-px py-0.5 mr-1 text-gray-300 opacity-0 group-hover:opacity-25 hover:!opacity-100 transition-opacity",
             { hidden: showEdit }
           )}
         >
