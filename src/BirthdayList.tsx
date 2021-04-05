@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { differenceInCalendarDays, getDaysInYear, startOfDay } from "date-fns";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import editIconSvg from "./edit_black_18dp.svg";
 import { Entry, MONTHS } from "./Types";
 
 function formatDate(month: number, date: number) {
@@ -31,7 +32,7 @@ function ListItemEdit({
   return (
     <div
       className={classNames(
-        "bg-white border border-gray-100 absolute left-[115px] top-[-13px] -right-1 p-2 rounded shadow-lg transition-opacity",
+        "bg-white border border-gray-100 absolute left-[131px] top-[-13px] -right-1 p-2 rounded shadow-lg transition-opacity",
         animateIn ? "opacity-100" : "opacity-0"
       )}
     >
@@ -98,7 +99,7 @@ function ListItem({
         "z-10": showEdit,
       })}
     >
-      <div className="text-gray-300 w-32">{formatDate(month, date)}</div>
+      <div className="text-gray-300 w-36">{formatDate(month, date)}</div>
       <div className="relative">
         {name}
         <button
@@ -106,11 +107,11 @@ function ListItem({
             setShowEdit(true);
           }}
           className={classNames(
-            "absolute right-full mr-1 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity",
+            "absolute right-full -top-px py-0.5 mr-1 text-gray-300 opacity-0 group-hover:opacity-25 hover:!opacity-100 transition-opacity",
             { hidden: showEdit }
           )}
         >
-          Edit
+          <img src={editIconSvg} />
         </button>
       </div>
       {showEdit ? (

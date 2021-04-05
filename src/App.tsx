@@ -164,7 +164,7 @@ function AddBirthday({
   const [showForm, setShowForm] = useState(false);
   const onClose = useCallback(() => setShowForm(false), [setShowForm]);
   return (
-    <div className="pl-32">
+    <div className="pl-36">
       {showForm ? (
         <AddBirthdayForm addEntry={addEntry} onClose={onClose} />
       ) : (
