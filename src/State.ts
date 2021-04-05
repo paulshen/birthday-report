@@ -72,7 +72,7 @@ function entryFromResponse(data: definitions["birthdays"]): Entry {
     name: data.name,
     month: data.month,
     date: data.date,
-    year: data.year,
+    year: data.year ?? undefined,
   };
 }
 

@@ -19,8 +19,13 @@ export function BirthdayCalendar({ entries }: { entries: Entry[] }) {
       }
       return (
         <div className="flex flex-wrap">
-          {e.map(({ name }, i) => (
-            <Tooltip text={`${name}`} key={i}>
+          {e.map(({ name, year: birthYear }, i) => (
+            <Tooltip
+              text={`${name}${
+                birthYear !== undefined ? ` (${year - birthYear})` : ""
+              }`}
+              key={i}
+            >
               {(tooltipProps) => (
                 <div
                   {...tooltipProps}

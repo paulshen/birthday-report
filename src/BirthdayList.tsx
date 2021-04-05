@@ -3,6 +3,7 @@ import { differenceInCalendarDays, getDaysInYear, startOfDay } from "date-fns";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import editIconSvg from "./edit_black_18dp.svg";
 import { Entry, MONTHS } from "./Types";
+import { getBirthdayAge } from "./Utils";
 
 function formatDate(month: number, date: number) {
   return `${MONTHS[month - 1]} ${date}`;
@@ -111,11 +112,16 @@ function ListItem({
         }
       )}
     >
-      <div className="text-gray-300 group-hover:text-gray-600 w-36 transition-colors">
+      <div className="text-gray-300 group-hover:text-gray-800 w-36 transition-colors">
         {formatDate(month, date)}
       </div>
       <div className="relative">
         {name}
+        {year !== undefined ? (
+          <span className="text-gray-300 ml-1 group-hover:text-gray-800 transition-colors">
+            ({getBirthdayAge(year, month, date)})
+          </span>
+        ) : null}
         <button
           onClick={() => {
             setShowEdit(true);
@@ -168,7 +174,7 @@ export function BirthdayList({
   );
   return (
     <div>
-      {sortedEntries.map(([entry], i) => (
+      {sortedEntries.map(([entry, isNextYear], i) => (
         <ListItem
           entry={entry}
           updateEntry={updateEntry}
