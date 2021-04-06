@@ -1,4 +1,4 @@
-# Birthday.report
+# 🎂📋 Birthday.report
 
 [Birthday.report](https://birthday.report) is a simple birthday tracker. Save and view a list of birthdays you need to remember.
 
