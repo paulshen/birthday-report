@@ -394,7 +394,7 @@ function App() {
   }
 
   return (
-    <div className="max-w-md mx-auto px-2 pt-16">
+    <div className="max-w-lg mx-auto px-3 pt-16">
       <div className="flex mb-8">
         <LeftSpacer />
         <div>
