@@ -98,7 +98,7 @@ function AddBirthdayForm({
             value={name}
             onChange={(e) => setName(e.target.value)}
             className={classNames(
-              "w-full bg-gray-100 rounded px-2 py-1.5 border transition-colors",
+              "w-full input-text bg-gray-100 rounded px-2 py-1.5 border transition-colors",
               showErrors && isNameTooShort
                 ? "border-red-300"
                 : "border-transparent"
@@ -112,7 +112,7 @@ function AddBirthdayForm({
             <select
               value={month}
               onChange={(e) => setMonth(e.target.value)}
-              className="bg-gray-100 rounded px-2 h-[34px] border border-transparent"
+              className="input-text bg-gray-100 rounded px-2 h-[34px] border border-transparent"
             >
               {MONTHS.map((month, i) => (
                 <option value={i + 1} key={i}>
@@ -124,11 +124,11 @@ function AddBirthdayForm({
           <div className="mr-4">
             <label className="block mb-0.5 text-2xs">Date</label>
             <input
-              type="text"
+              type="number"
               value={date}
               onChange={(e) => setDate(e.target.value)}
               className={classNames(
-                "w-12 bg-gray-100 rounded px-2 py-1.5 border transition-colors",
+                "w-12 input-text bg-gray-100 rounded px-2 py-1.5 border transition-colors",
                 showErrors && !isDateValid
                   ? "border-red-300"
                   : "border-transparent"
@@ -138,11 +138,11 @@ function AddBirthdayForm({
           <div>
             <label className="block mb-0.5 text-2xs">Year (optional)</label>
             <input
-              type="text"
+              type="number"
               value={year}
               onChange={(e) => setYear(e.target.value)}
               className={classNames(
-                "w-20 bg-gray-100 rounded px-2 py-1.5 border transition-colors",
+                "w-16 input-text bg-gray-100 rounded px-2 py-1.5 border transition-colors",
                 showErrors && !isYearValid
                   ? "border-red-300"
                   : "border-transparent"

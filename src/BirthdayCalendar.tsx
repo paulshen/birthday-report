@@ -56,7 +56,7 @@ export function BirthdayCalendar({ entries }: { entries: Entry[] }) {
                 month === 1 ? [year - 1, 12] : [year, month - 1]
               );
             }}
-            className="flex mr-2 opacity-25 hover:opacity-100 transition-opacity"
+            className="flex p-1 mr-2 opacity-25 hover:opacity-100 transition-opacity"
           >
             <img src={arrowBackSvg} />
           </button>
@@ -66,7 +66,7 @@ export function BirthdayCalendar({ entries }: { entries: Entry[] }) {
                 month === 12 ? [year + 1, 1] : [year, month + 1]
               );
             }}
-            className="flex opacity-25 hover:opacity-100 transition-opacity"
+            className="flex p-1 opacity-25 hover:opacity-100 transition-opacity"
           >
             <img src={arrowForwardSvg} />
           </button>

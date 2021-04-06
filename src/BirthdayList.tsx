@@ -125,7 +125,7 @@ function ListItem({
         {formatDate(month, date)}
       </div>
       <div className="flex-grow relative">
-        {name}
+        <span className="font-medium">{name}</span>
         {year !== undefined ? (
           <span className="text-gray-300 ml-1 group-hover:text-gray-800 transition-colors">
             ({getBirthdayAge(year, month, date)})

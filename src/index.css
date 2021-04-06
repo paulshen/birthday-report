@@ -29,3 +29,10 @@
     top: 0;
   }
 }
+
+@supports (-webkit-touch-callout: none) {
+  .input-text {
+    font-size: 16px;
+    height: 36px;
+  }
+}
