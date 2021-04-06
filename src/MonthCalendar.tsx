@@ -35,10 +35,13 @@ function Week({
         )}
         key={i}
       >
-        <div className="text-gray-300 font text-xs group-hover:text-gray-800">
-          {startDate + i - startDay}
+        <div className="calendar-cell-spacer" />
+        <div className="calendar-cell-contents">
+          <div className="text-gray-300 font text-xs group-hover:text-gray-800">
+            {startDate + i - startDay}
+          </div>
+          {renderCell(startDate + i - startDay)}
         </div>
-        {renderCell(startDate + i - startDay)}
       </div>
     );
   }

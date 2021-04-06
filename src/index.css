@@ -8,3 +8,24 @@
   margin-right: -1px;
   margin-bottom: -1px;
 }
+
+@supports (aspect-ratio: 1) {
+  .calendar-cell {
+    aspect-ratio: 1;
+  }
+}
+
+@supports not (aspect-ratio: 1) {
+  .calendar-cell {
+    position: relative;
+  }
+
+  .calendar-cell-spacer {
+    padding-top: 100%;
+  }
+
+  .calendar-cell-contents {
+    position: absolute;
+    top: 0;
+  }
+}
