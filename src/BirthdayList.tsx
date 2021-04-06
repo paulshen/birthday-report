@@ -48,9 +48,9 @@ function ListItemEdit({
       )}
     >
       <form
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          updateEntry({
+          await updateEntry({
             ...entry,
             name: nameInputRef.current!.value,
           });

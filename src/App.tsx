@@ -17,12 +17,6 @@ import {
 import { DAYS_IN_MONTH, Entry, EntryWithoutId, MONTHS } from "./Types";
 import { LeftSpacer } from "./UI";
 
-const DATA: Entry[] = [
-  { id: 1, name: "Alice", month: 9, date: 25, year: 1991 },
-  { id: 2, name: "Bob", month: 3, date: 21, year: 1988 },
-  { id: 3, name: "Carol", month: 7, date: 28, year: 1993 },
-];
-
 function AddBirthdayForm({
   insertEntry,
   forceShow,
@@ -68,7 +62,7 @@ function AddBirthdayForm({
       )}
     >
       <form
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
           if (isNameTooShort || !isDateValid || !isYearValid) {
             setShowErrors(true);
@@ -83,7 +77,7 @@ function AddBirthdayForm({
           if (year !== "") {
             entry.year = parseInt(year);
           }
-          insertEntry(entry);
+          await insertEntry(entry);
           setName("");
           setMonth("1");
           setDate("");
