@@ -52,7 +52,7 @@ export function login() {
       provider: "google",
     },
     {
-      redirectTo: `http://localhost:3000?login_entries=${btoa(
+      redirectTo: `${location.origin}/?login_entries=${btoa(
         JSON.stringify(useEntries.getState().entries)
       )}`,
     }
