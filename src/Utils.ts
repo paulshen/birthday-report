@@ -1,4 +1,4 @@
-import { differenceInYears } from "date-fns";
+import { addDays, differenceInYears } from "date-fns";
 
 export function getBirthdayAge(
   birthYear: number,
@@ -6,11 +6,9 @@ export function getBirthdayAge(
   birthDate: number
 ): number {
   return (
-    Math.ceil(
-      differenceInYears(
-        new Date(),
-        new Date(birthYear, birthMonth - 1, birthDate)
-      )
+    differenceInYears(
+      addDays(new Date(), -1),
+      new Date(birthYear, birthMonth - 1, birthDate)
     ) + 1
   );
 }
