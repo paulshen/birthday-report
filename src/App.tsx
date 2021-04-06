@@ -15,6 +15,7 @@ import {
   useUser,
 } from "./State";
 import { DAYS_IN_MONTH, Entry, EntryWithoutId, MONTHS } from "./Types";
+import { LeftSpacer } from "./UI";
 
 const DATA: Entry[] = [
   { id: 1, name: "Alice", month: 9, date: 25, year: 1991 },
@@ -214,7 +215,7 @@ function AddBirthday({
   const onClose = useCallback(() => setShowForm(false), [setShowForm]);
   return (
     <div className="flex">
-      <div className="w-36">{forceShow ? <StartHere /> : null}</div>
+      <LeftSpacer>{forceShow ? <StartHere /> : null}</LeftSpacer>
       <div>
         {forceShow || showForm ? (
           <AddBirthdayForm
@@ -229,7 +230,7 @@ function AddBirthday({
             }}
             className="text-gray-400 hover:text-gray-800 mb-0.5 transition-colors"
           >
-            + Add birthdays
+            + Add birthday
           </button>
         )}
       </div>
@@ -245,17 +246,20 @@ function LoginNotice() {
   }, []);
 
   return (
-    <div
-      className={classNames(
-        "ml-36 mt-4 bg-red-100 text-xs p-2 rounded transition-opacity",
-        animateIn ? "opacity-100" : "opacity-0"
-      )}
-    >
-      <button className="underline" onClick={() => login()}>
-        Log in
-      </button>{" "}
-      to save your birthday report! You will lose it otherwise when you close
-      this browser tab.
+    <div className="flex">
+      <LeftSpacer />
+      <div
+        className={classNames(
+          "mt-4 bg-red-100 text-xs p-2 rounded transition-opacity",
+          animateIn ? "opacity-100" : "opacity-0"
+        )}
+      >
+        <button className="underline" onClick={() => login()}>
+          Log in
+        </button>{" "}
+        to save your birthday report! You will lose it otherwise when you close
+        this browser tab.
+      </div>
     </div>
   );
 }
@@ -263,27 +267,30 @@ function LoginNotice() {
 function Footer() {
   const user = useUser().user;
   return (
-    <div className="ml-36 mt-16 pb-16">
-      {user === undefined ? (
-        <button
-          onClick={() => login()}
-          className="text-gray-400 hover:text-gray-700 transition-colors"
-        >
-          Log in
-        </button>
-      ) : (
-        <div className="text-xs">
-          <div className="text-gray-400">You are {user.email}</div>
-          <div>
-            <button
-              onClick={() => logout()}
-              className="text-gray-400 hover:text-gray-800 hover:underline transition-colors"
-            >
-              Log out
-            </button>
+    <div className="flex mt-16 pb-16">
+      <LeftSpacer />
+      <div>
+        {user === undefined ? (
+          <button
+            onClick={() => login()}
+            className="text-gray-400 hover:text-gray-700 transition-colors"
+          >
+            Log in
+          </button>
+        ) : (
+          <div className="text-xs">
+            <div className="text-gray-400">You are {user.email}</div>
+            <div>
+              <button
+                onClick={() => logout()}
+                className="text-gray-400 hover:text-gray-800 hover:underline transition-colors"
+              >
+                Log out
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
@@ -387,18 +394,21 @@ function App() {
   }
 
   return (
-    <div className="max-w-md mx-auto pt-16">
-      <div className="ml-36 mb-8">
-        <div className="flex text-xl">
-          <span className="">
-            Bi
-            <span style={{ letterSpacing: "2px" }}>r</span>
-            thday.repo
-            <span style={{ letterSpacing: "2px" }}>r</span>t
-          </span>
-          <span className="ml-2">🎂📋</span>
+    <div className="max-w-md mx-auto px-2 pt-16">
+      <div className="flex mb-8">
+        <LeftSpacer />
+        <div>
+          <div className="flex text-xl">
+            <span className="">
+              Bi
+              <span style={{ letterSpacing: "2px" }}>r</span>
+              thday.repo
+              <span style={{ letterSpacing: "2px" }}>r</span>t
+            </span>
+            <span className="ml-2">🎂📋</span>
+          </div>
+          <div className="text-xs text-gray-300">Stop forgetting birthdays</div>
         </div>
-        <div className="text-xs text-gray-300">Stop forgetting birthdays</div>
       </div>
       <AddBirthday forceShow={entries.length === 0} insertEntry={insertEntry} />
       <BirthdayList

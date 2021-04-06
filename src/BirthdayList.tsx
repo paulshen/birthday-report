@@ -2,11 +2,11 @@ import classNames from "classnames";
 import { differenceInCalendarDays, getDaysInYear, startOfDay } from "date-fns";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import editIconSvg from "./edit_black_18dp.svg";
-import { Entry, MONTHS } from "./Types";
+import { Entry, SHORT_MONTHS } from "./Types";
 import { getBirthdayAge } from "./Utils";
 
 function formatDate(month: number, date: number) {
-  return `${MONTHS[month - 1]} ${date}`;
+  return `${SHORT_MONTHS[month - 1]} ${date}`;
 }
 
 function ListItemEdit({
@@ -33,7 +33,7 @@ function ListItemEdit({
   return (
     <div
       className={classNames(
-        "bg-white border border-gray-100 absolute left-[123px] top-[-21px] -right-1 p-4 rounded shadow-lg transition-opacity",
+        "bg-white border border-gray-100 absolute left-[-21px] top-[-21px] -right-1 p-4 rounded shadow-lg transition-opacity",
         animateIn ? "opacity-100" : "opacity-0"
       )}
     >
@@ -112,10 +112,10 @@ function ListItem({
         }
       )}
     >
-      <div className="text-gray-300 group-hover:text-gray-800 w-36 transition-colors">
+      <div className="text-gray-400 group-hover:text-gray-800 w-32 max-w-[25%] transition-colors">
         {formatDate(month, date)}
       </div>
-      <div className="relative">
+      <div className="flex-grow relative">
         {name}
         {year !== undefined ? (
           <span className="text-gray-300 ml-1 group-hover:text-gray-800 transition-colors">
@@ -133,15 +133,15 @@ function ListItem({
         >
           <img src={editIconSvg} />
         </button>
+        {showEdit ? (
+          <ListItemEdit
+            entry={entry}
+            updateEntry={updateEntry}
+            deleteEntry={deleteEntry}
+            onClose={() => setShowEdit(false)}
+          />
+        ) : null}
       </div>
-      {showEdit ? (
-        <ListItemEdit
-          entry={entry}
-          updateEntry={updateEntry}
-          deleteEntry={deleteEntry}
-          onClose={() => setShowEdit(false)}
-        />
-      ) : null}
     </div>
   );
 }
