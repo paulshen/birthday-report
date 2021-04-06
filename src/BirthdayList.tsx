@@ -23,7 +23,16 @@ function ListItemEdit({
   const [animateIn, setAnimateIn] = useState(false);
   useEffect(() => {
     const timeout = setTimeout(() => setAnimateIn(true), 0);
-    return () => clearTimeout(timeout);
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener("keydown", onKeyDown);
+    };
   }, []);
 
   const nameInputRef = useRef<HTMLInputElement | null>(null);
