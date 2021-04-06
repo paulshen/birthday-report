@@ -1,3 +1,4 @@
+import { isLeapYear } from "date-fns";
 import React, { useCallback, useState } from "react";
 import { Tooltip } from "react-atmosphere";
 import arrowBackSvg from "./arrow_back_black_18dp.svg";
@@ -13,7 +14,15 @@ export function BirthdayCalendar({ entries }: { entries: Entry[] }) {
   const [year, month] = yearMonth;
   const renderCell = useCallback(
     (date: number) => {
-      const e = entries.filter((e) => e.month === month && e.date === date);
+      const e = entries.filter(
+        (e) =>
+          e.month === month &&
+          (e.date === date ||
+            (month === 2 &&
+              date === 28 &&
+              e.date === 29 &&
+              !isLeapYear(new Date(year, month - 1, date))))
+      );
       if (e.length === 0) {
         return null;
       }
@@ -39,7 +48,7 @@ export function BirthdayCalendar({ entries }: { entries: Entry[] }) {
         </div>
       );
     },
-    [month, entries]
+    [year, month, entries]
   );
 
   return (
