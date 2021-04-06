@@ -3,6 +3,7 @@ import { differenceInCalendarDays, getDaysInYear, startOfDay } from "date-fns";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import editIconSvg from "./edit_black_18dp.svg";
 import { Entry, SHORT_MONTHS } from "./Types";
+import { LeftSpacer } from "./UI";
 import { getBirthdayAge } from "./Utils";
 
 function formatDate(month: number, date: number) {
@@ -60,7 +61,7 @@ function ListItemEdit({
           <input
             type="text"
             defaultValue={entry.name}
-            className="w-full bg-gray-100 rounded px-1 py-1"
+            className="w-full font-medium bg-gray-100 rounded px-1 py-1"
             ref={nameInputRef}
           ></input>
         </div>
@@ -165,7 +166,7 @@ export function BirthdayList({
   deleteEntry: (entryId: number) => void;
 }) {
   const entriesWithDaysAway = useMemo<
-    [entry: Entry, daysAway: number][]
+    [entry: Entry, daysAway: number, isNextYear: boolean][]
   >(() => {
     const today = startOfDay(new Date());
     const daysInYear = getDaysInYear(today);
@@ -174,23 +175,43 @@ export function BirthdayList({
         new Date(today.getFullYear(), entry.month - 1, entry.date),
         today
       );
-      return [entry, diff < 0 ? diff + daysInYear : diff];
+      return [entry, diff < 0 ? diff + daysInYear : diff, diff < 0];
     });
   }, [entries]);
   const sortedEntries = useMemo(
     () => entriesWithDaysAway.sort((a, b) => a[1] - b[1]),
     [entriesWithDaysAway]
   );
+  const entriesNextYear = sortedEntries
+    .filter(([_entry, _, isNextYear]) => isNextYear)
+    .map(([entry], i) => (
+      <ListItem
+        entry={entry}
+        updateEntry={updateEntry}
+        deleteEntry={deleteEntry}
+        key={entry.id}
+      />
+    ));
   return (
     <div>
-      {sortedEntries.map(([entry, isNextYear], i) => (
-        <ListItem
-          entry={entry}
-          updateEntry={updateEntry}
-          deleteEntry={deleteEntry}
-          key={entry.id}
-        />
-      ))}
+      {sortedEntries
+        .filter(([_entry, _, isNextYear]) => !isNextYear)
+        .map(([entry], i) => (
+          <ListItem
+            entry={entry}
+            updateEntry={updateEntry}
+            deleteEntry={deleteEntry}
+            key={entry.id}
+          />
+        ))}
+      {entriesNextYear.length > 0 ? (
+        <div className="flex">
+          <div className="text-gray-200 font-medium pb-0.5">
+            {new Date().getFullYear() + 1}
+          </div>
+        </div>
+      ) : null}
+      {entriesNextYear}
     </div>
   );
 }
