@@ -267,29 +267,50 @@ function LoginNotice() {
 function Footer() {
   const user = useUser().user;
   return (
-    <div className="flex mt-16 pb-16">
+    <div className="flex mt-16 pb-16 text-gray-400">
       <LeftSpacer />
       <div>
-        {user === undefined ? (
-          <button
-            onClick={() => login()}
-            className="text-gray-400 hover:text-gray-700 transition-colors"
+        {user !== undefined ? (
+          <div className="text-gray-400">You are {user.email}</div>
+        ) : null}
+        <div>
+          {user === undefined ? (
+            <button
+              onClick={() => login()}
+              className="hover:text-gray-700 hover:underline transition-colors"
+            >
+              Log in
+            </button>
+          ) : (
+            <button
+              onClick={() => logout()}
+              className="hover:text-gray-800 hover:underline transition-colors"
+            >
+              Log out
+            </button>
+          )}
+        </div>
+        <div>
+          <a
+            href="https://github.com/paulshen/birthday-report"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-gray-800 hover:underline transition-colors"
           >
-            Log in
-          </button>
-        ) : (
-          <div className="text-xs">
-            <div className="text-gray-400">You are {user.email}</div>
-            <div>
-              <button
-                onClick={() => logout()}
-                className="text-gray-400 hover:text-gray-800 hover:underline transition-colors"
-              >
-                Log out
-              </button>
-            </div>
-          </div>
-        )}
+            Source
+          </a>
+        </div>
+        <div>
+          {"By "}
+          <a
+            href="https://twitter.com/_paulshen"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-gray-800 hover:underline transition-colors"
+          >
+            @_paulshen
+          </a>
+        </div>
       </div>
     </div>
   );
